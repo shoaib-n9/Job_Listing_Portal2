@@ -26,7 +26,14 @@ export const register = async (req, res) => {
       password: hashedPassword,
       role,
     });
-  } catch (error) {}
+
+    return res.status(201).json({
+      message: 'Account Created Successfully',
+      success: true,
+    });
+  } catch (error) {
+    console.log(Error);
+  }
 };
 
 export const login = async (req, res) => {
@@ -74,6 +81,7 @@ export const login = async (req, res) => {
       role: user.role,
       profile: user.profile,
     };
+
     return res
       .status(200)
       .cookie('token', token, {
@@ -86,5 +94,73 @@ export const login = async (req, res) => {
         user,
         success: true,
       });
-  } catch (error) {}
+  } catch (error) {
+    console.log(Error);
+  }
+};
+
+export const logout = async (req, res) => {
+  try {
+    return res.status(200).cookie('token', '', { maxAge: 0 }).json({
+      message: 'Logged out Successfully.',
+      success: true,
+    });
+  } catch (error) {
+    console.log(Error);
+  }
+};
+
+export const updateProfile = async (req, res) => {
+  try {
+    const { fullname, email, phoneNumber, bio, skills } = req.body;
+    const file = req.file;
+    if (!fullname || !email || !phoneNumber || !bio || !skills) {
+      return res.status(4000).json({
+        message: 'Something is missing',
+        success: false,
+      });
+    }
+
+    // CLOUDINARY WILL COME HERE
+
+    const skillsArray = skills.split(',');
+    const userId = req.id; // FROM MIDDLEWARE AUTHENTICATION
+    let user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(400).json({
+        message: 'User Not Found.',
+        success: false,
+      });
+    }
+
+    // UPDATING DATA
+    (user.fullname = fullname),
+      user,
+      (email = email),
+      (user.phoneNumber = phoneNumber),
+      (user.profile.bio = bio),
+      (user.profile.skills = skillsArray);
+
+    // REUSME WILL BE ADDED BELOW LATER (AFTER ADDING CLOUDINARY)
+
+    await user.save();
+
+    user = {
+      _id: user._id,
+      fullname: user.fullname,
+      email: user.email,
+      phoneNumber: user.phoneNumber,
+      role: user.role,
+      profile: user.profile,
+    };
+
+    return res.status(200).json({
+      message: 'Profile Updated Successfully.',
+      user,
+      success: true,
+    });
+  } catch (error) {
+    console.log(Error);
+  }
 };
