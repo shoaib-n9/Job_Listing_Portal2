@@ -15,8 +15,8 @@ export const register = async (req, res) => {
       });
     }
     const file = req.file;
-    const fileUri = getDataUri(file);
-    const cloudResponse = await cloudinary.uploader.upload(fileUri.content);
+    //const fileUri = getDataUri(file);
+    //const cloudResponse = await cloudinary.uploader.upload(fileUri.content);
 
     const user = await User.findOne({ email });
     if (user) {
@@ -128,8 +128,8 @@ export const updateProfile = async (req, res) => {
 
     // CLOUDIINARY WILL COME HERE
 
-    const fileUri = getDataUri(file);
-    const cloudResponse = await cloudinary.uploader.upload(fileUri.content);
+    //const fileUri = getDataUri(file);
+    //const cloudResponse = await cloudinary.uploader.upload(fileUri.content);
 
     let skillsArray;
     if (skills) {
@@ -155,10 +155,12 @@ export const updateProfile = async (req, res) => {
 
     // REUSME WILL BE ADDED BELOW LATER (AFTER ADDING CLOUDINARY)
 
-    if (cloudResponse) {
+    /**
+     if (cloudResponse) {
       user.profile.resume = cloudResponse.secure_url; // SAVE THE CLOUDINARY URL
       user.profile.resumeOriginalName = file.originalname; // SAVE THE ORIGINAL FILE NAME
     }
+      */
 
     await user.save();
 
