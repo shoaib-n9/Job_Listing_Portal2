@@ -4,6 +4,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import connectDB from './utilities/database.js';
 import userRoute from './routes/user.route.js';
+import companyRoute from './routes/company.route.js';
 
 dotenv.config({}); //
 
@@ -35,6 +36,7 @@ const PORT = process.env.PORT || 3000; // IF EXIST PORT NO. WILL BE 8000 OTHERWI
 
 // API
 app.use('/api/v1/user', userRoute);
+app.use('/api/v1/company', companyRoute);
 
 /**
 "http://localhost:8000/api/v1/user/register"          
